@@ -1,11 +1,5 @@
 \version "2.25.0"
 
-#(define max-text-width 0)
-
-#(define-markup-command (short-instrument-name layout properties name) (markup?)
-  (interpret-markup layout properties
-    (markup #:with-dimension X `(0 . ,max-text-width) name)))
-
 #(define (Instrument_name_measuring_engraver context)
   (let (
       (done #f)
@@ -13,7 +7,8 @@
       (system-start-delimiters '())
       (max-X-offset 0)
       (system-start-texts '())
-      (max-long-text-width 0))
+      (max-long-text-width 0)
+      (max-text-width 0))
 
     (make-engraver
       (acknowledgers
@@ -37,7 +32,8 @@
             (lambda (system-start-text)
               (let* (
                   (layout (ly:grob-layout system-start-text))
-                  (properties (ly:grob-alist-chain system-start-text (ly:output-def-lookup layout 'text-font-defaults)))
+                  ; Set 'font-encoding to 'latin1 to quiet warnings when creating stencils.
+                  (properties (ly:grob-alist-chain system-start-text (assoc-set! (ly:output-def-lookup layout 'text-font-defaults) 'font-encoding 'latin1)))
                   (long-text-X-extent (ly:stencil-extent (interpret-markup layout properties (ly:grob-property system-start-text 'long-text)) X))
                   (text-X-extent (ly:stencil-extent (interpret-markup layout properties (ly:grob-property system-start-text 'text)) X)))
                 (set! max-long-text-width (max max-long-text-width (cdr long-text-X-extent)))
@@ -62,13 +58,14 @@
               (ly:message "\nAdd\n  short-indent = ~A\\pt\nto your \\paper block.\n\n" short-indent))
           )
 
-          (for-each
-            (lambda (system-start-text)
-              (ly:grob-set-property! system-start-text 'text (markup #:with-dimension X `(0 . ,max-text-width) (ly:grob-property system-start-text 'text))))
-            system-start-texts)
-
           (set! done #t)
           (set! system-start-delimiters '())
           (set! max-X-offset 0)
-          (set! system-start-texts '())
-          (set! max-long-text-width 0))))))
+          (set! max-long-text-width 0))
+
+        (for-each
+          (lambda (system-start-text)
+            (ly:grob-set-property! system-start-text 'text (markup #:with-dimension X `(0 . ,max-text-width) (ly:grob-property system-start-text 'text))))
+          system-start-texts)
+
+        (set! system-start-texts '())))))
