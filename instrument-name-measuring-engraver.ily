@@ -1,5 +1,26 @@
 \version "2.25.0"
 
+\layout {
+  \context {
+    \PianoStaff
+    \override InstrumentName.self-alignment-X = #RIGHT
+  }
+  \context {
+    \Staff
+    \override InstrumentName.self-alignment-X = #RIGHT
+  }
+  \context {
+    \StaffGroup
+    \override InstrumentName.self-alignment-X = #RIGHT
+  }
+}
+
+$(let (
+    (file-name (string-join `(,(getcwd) ".indents.ily") file-name-separator-string)))
+  (when (file-exists? file-name)
+    #{ \include $file-name #}
+  ))
+
 #(define (Instrument_name_measuring_engraver context)
   (let (
       (done #f)
@@ -49,14 +70,21 @@
               (short-indent (* (+ max-text-width max-X-offset extra-padding) (/ staff-space pt))))
 
             ; These don’t appear to do anything:
+            ;
             ; (ly:output-def-set-variable! paper 'indent indent)
             ; (ly:output-def-set-variable! paper 'short-indent short-indent)
+            ;
+            ; See also
+            ; https://lists.gnu.org/archive/html/lilypond-user/2024-01/msg00030.html
 
-            (unless (< (abs (- (/ (ly:paper-get-number paper 'indent) pt) indent)) 1e-9)
-              (ly:message "\nYou may need to add\n  indent = ~A\\pt\nto your \\paper block.\n\n" indent))
-            (when (zero? (ly:paper-get-number paper 'short-indent))
-              (ly:message "\nAdd\n  short-indent = ~A\\pt\nto your \\paper block.\n\n" short-indent))
-          )
+            (let* (
+                (file-name (string-join `(,(getcwd) ".indents.ily") file-name-separator-string))
+                (output-port (open-output-file file-name)))
+              (format output-port "\\paper {\n  indent = ~A\\pt\n  short-indent = ~A\\pt\n}\n" indent short-indent)
+              (close-output-port output-port)
+              (unless (and (< (abs (- (/ (ly:paper-get-number paper 'indent) pt) indent)) 1e-9)
+                           (< (abs (- (/ (ly:paper-get-number paper 'short-indent) pt) short-indent)) 1e-9))
+                (ly:message "\nIndents have changed; you may need to re-run lilypond.\n\n"))))
 
           (set! done #t)
           (set! system-start-delimiters '())
