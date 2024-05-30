@@ -12,7 +12,7 @@ You can use the file [instrument-name-measuring-engraver.ily](instrument-name-me
 
 2. Run `lilypond` on the LilyPond file *twice*. The first time you run `lilypond`, an .indents.ily file will be written with a [`\paper` block](https://lilypond.org/doc/Documentation/notation/the-paper-block) that contains indents to align instrument names to the left margin. In subsequent runs of `lilypond`, the .indents.ily file will be `\include`d, and the indents will be used.
 
-Note that if you declare a `\paper` block after `\include`-ing this engraver, and the `\paper` block writes indents, the indents in the subsequent `\paper` block will take precedence over the indents in .indents.ily. Consequently, because `set-paper-size` sets indents, you must set paper size *before* `\include`-ing this engraver. For example, this will result in the indents in .indents.ily being unused:
+Note that if you declare a `\paper` block after `\include`-ing this engraver, and the `\paper` block sets indents, the indents in the subsequent `\paper` block will take precedence over the indents in .indents.ily. Consequently, because `set-paper-size` sets indents, you must set paper size *before* `\include`-ing this engraver. For example, this will result in indents in .indents.ily being unused:
 
 ```ly
 \include "lilypond-instrument-name-measuring-engraver/instrument-name-measuring-engraver.ily"
