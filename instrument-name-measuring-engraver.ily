@@ -42,7 +42,7 @@ $(let (
         (unless done
           (for-each
             (lambda (system-start-delimiter)
-              (let* (
+              (let (
                   (padding (ly:grob-property system-start-delimiter 'padding))
                   (thickness (ly:grob-property system-start-delimiter 'thickness)))
                 (unless (or (null? padding) (null? thickness))
