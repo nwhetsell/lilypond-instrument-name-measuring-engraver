@@ -2,6 +2,10 @@
 
 \layout {
   \context {
+    \GrandStaff
+    \override InstrumentName.self-alignment-X = #RIGHT
+  }
+  \context {
     \PianoStaff
     \override InstrumentName.self-alignment-X = #RIGHT
   }
