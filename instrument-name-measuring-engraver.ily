@@ -19,8 +19,7 @@
   }
 }
 
-$(let (
-    (file-name (string-join `(,(getcwd) ".indents.ily") file-name-separator-string)))
+$(let ((file-name (string-join `(,(getcwd) ".indents.ily") file-name-separator-string)))
   (when (file-exists? file-name)
     #{ \include $file-name #}
   ))
@@ -28,8 +27,10 @@ $(let (
 #(define (Instrument_name_measuring_engraver context)
   (let (
       (done #f)
-      (extra-padding 0.2)
-      (system-start-delimiters '())
+      (system-start-delimiter-grobs-by-context '())
+      (system-start-delimiter-pairs-by-context '())
+      (top-level-system-start-delimiter-pairs '())
+      (max-depth 0)
       (max-X-offset 0)
       (system-start-texts '())
       (max-long-text-width 0)
@@ -38,20 +39,65 @@ $(let (
     (make-engraver
       (acknowledgers
         ((system-start-delimiter-interface engraver grob source-engraver)
-          (set! system-start-delimiters (cons grob system-start-delimiters)))
+          ; Gather contexts that have a systemStartDelimiter property (usually
+          ; StaffGroup contexts) into a tree of pairs such that each pair’s car
+          ; is the context and cdr is a list of pairs.
+          (let* (
+              (context (ly:translator-context source-engraver))
+              (initial-pair (assoc-ref system-start-delimiter-pairs-by-context context)))
+            (set! system-start-delimiter-grobs-by-context (assoc-set! system-start-delimiter-grobs-by-context context grob))
+            (unless initial-pair
+              (set! initial-pair (cons context '()))
+              (let recurse-ancestor-contexts (
+                  (pair initial-pair)
+                  (ancestor-context (ly:context-parent context)))
+                (if ancestor-context
+                  (let (
+                      (delimiter (ly:context-property ancestor-context 'systemStartDelimiter))
+                      (next-pair pair)
+                      (had-pair #f))
+                    (when (and delimiter
+                               (not (null? delimiter)))
+                      (set! next-pair (assoc-ref system-start-delimiter-pairs-by-context ancestor-context))
+                      (if next-pair
+                        (begin
+                          (set-cdr! next-pair (cons pair (cdr next-pair)))
+                          (set! had-pair #t))
+                      ; else
+                        (begin
+                          (set! next-pair (cons ancestor-context (list pair)))
+                          (set! system-start-delimiter-pairs-by-context (assoc-set! system-start-delimiter-pairs-by-context ancestor-context next-pair)))))
+                    (set! context ancestor-context)
+                    (unless had-pair
+                      (recurse-ancestor-contexts next-pair (ly:context-parent context))))
+                ; else
+                  (set! top-level-system-start-delimiter-pairs (cons pair top-level-system-start-delimiter-pairs)))))))
         ((system-start-text-interface engraver grob source-engraver)
           (set! system-start-texts (cons grob system-start-texts))))
 
       ((stop-translation-timestep engraver)
         (unless done
           (for-each
-            (lambda (system-start-delimiter)
-              (let (
-                  (padding (ly:grob-property system-start-delimiter 'padding))
-                  (thickness (ly:grob-property system-start-delimiter 'thickness)))
-                (unless (or (null? padding) (null? thickness))
-                  (set! max-X-offset (max max-X-offset (+ padding thickness))))))
-            system-start-delimiters)
+            (lambda (top-level-system-start-delimiter-pair)
+              (let recurse-pairs (
+                  (pair top-level-system-start-delimiter-pair)
+                  (X-offset 0)
+                  (depth 0))
+                (set! max-depth (max max-depth depth))
+                (let* (
+                    (system-start-delimiter (assoc-ref system-start-delimiter-grobs-by-context (car pair)))
+                    (padding (ly:grob-property system-start-delimiter 'padding 0))
+                    (thickness (ly:grob-property system-start-delimiter 'thickness 0))
+                    (total-X-offset (+ X-offset padding thickness)))
+                  (set! max-X-offset (max max-X-offset total-X-offset))
+                  (for-each
+                    (lambda (child-pair)
+                      (recurse-pairs child-pair total-X-offset (1+ depth)))
+                    (cdr pair))
+                )
+              )
+            )
+            top-level-system-start-delimiter-pairs)
 
           (for-each
             (lambda (system-start-text)
@@ -66,6 +112,7 @@ $(let (
             system-start-texts)
 
           (let* (
+              (extra-padding (- -0.7 (* 0.25 max-depth)))
               (paper (ly:parser-lookup '$defaultpaper))
               (module (ly:output-def-scope paper))
               (staff-space (variable-ref (module-variable module 'staff-space)))
@@ -84,16 +131,13 @@ $(let (
             (let* (
                 (file-name (string-join `(,(getcwd) ".indents.ily") file-name-separator-string))
                 (output-port (open-output-file file-name)))
-              (format output-port "\\paper {\n  indent = ~A\\pt\n  short-indent = ~A\\pt\n}\n" indent short-indent)
+              (format output-port "\\paper {\n  indent = ~A\\pt\n  short-indent = ~A\\pt % from max width of ~A staff spaces\n}\n" indent short-indent max-text-width)
               (close-output-port output-port)
               (unless (and (< (abs (- (/ (ly:paper-get-number paper 'indent) pt) indent)) 1e-9)
                            (< (abs (- (/ (ly:paper-get-number paper 'short-indent) pt) short-indent)) 1e-9))
                 (ly:message "\nIndents have changed; you may need to re-run lilypond.\n\n"))))
 
-          (set! done #t)
-          (set! system-start-delimiters '())
-          (set! max-X-offset 0)
-          (set! max-long-text-width 0))
+          (set! done #t))
 
         (for-each
           (lambda (system-start-text)
