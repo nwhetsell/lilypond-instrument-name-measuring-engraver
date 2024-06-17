@@ -1,0 +1,24 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Test:
+    runs-on: macos-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Install LilyPond
+      run: brew install nwhetsell/lilypond/lilypond-unstable && brew link lilypond-unstable
+
+    - name: Create examples PDFs
+      run: |
+        cd examples
+        for _ in {1..2}; do lilypond orchestra.ly; done
+
+    - name: Archive PDFs
+      uses: actions/upload-artifact@main
+      with:
+        name: artifacts
+        path: 'examples/*.pdf'
