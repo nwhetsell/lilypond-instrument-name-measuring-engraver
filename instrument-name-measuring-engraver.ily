@@ -113,9 +113,7 @@ $(let ((file-name (string-join `(,(getcwd) ,indents-file-name) file-name-separat
     #{ \include $file-name #}))
 
 #(define (Instrument_name_measuring_engraver context)
-  (let (
-      (done #f)
-      (system-start-texts '()))
+  (let ((system-start-texts '()))
 
     (make-engraver
       (acknowledgers
