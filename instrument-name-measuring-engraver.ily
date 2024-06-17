@@ -78,16 +78,16 @@
 #(define-markup-command (shared-stave layout properties instrument numeral-column) (markup? markup?)
   (interpret-markup layout properties
     (let ((file-name (string-join `(,(getcwd) ,short-instrument-name-width-file-name) file-name-separator-string)))
-      (if (file-exists? file-name)
+      (if indents-file-exists
         (begin
           (load file-name)
           #{
             \markup {
+              \override #'(baseline-skip . 2.5)
               \override #`(line-width . ,short-instrument-name-width)
               \fill-line {
                 \vcenter {
                   #instrument
-                  \override #'(baseline-skip . 2.5)
                   #numeral-column
                 }
               }
@@ -96,11 +96,11 @@
       ; else
         #{
           \markup {
+            \override #'(baseline-skip . 2.5)
             \concat {
               \vcenter {
                 #instrument
-                " "
-                \override #'(baseline-skip . 2.5)
+                \hspace #1
                 #numeral-column
               }
             }
