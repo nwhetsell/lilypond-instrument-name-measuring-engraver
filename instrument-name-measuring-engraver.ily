@@ -105,8 +105,7 @@
               }
             }
           }
-        #}
-      ))))
+        #}))))
 
 $(let ((file-name (string-join `(,(getcwd) ,indents-file-name) file-name-separator-string)))
   (when (file-exists? file-name)
