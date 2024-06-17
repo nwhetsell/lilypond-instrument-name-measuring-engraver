@@ -10,7 +10,7 @@ You can use the file [instrument-name-measuring-engraver.ily](instrument-name-me
 
     to your LilyPond file.
 
-2. Run `lilypond` on the LilyPond file *twice*. The first time you run `lilypond`, two files will be written: an .indents.ily with a [`\paper` block](https://lilypond.org/doc/Documentation/notation/the-paper-block) that contains indents to align instrument names to the left margin, and a .short-instrument-name-width.scm file with the maximum width of short instrument names (used on all staves but the first). In subsequent runs of `lilypond`, these files will be used to align instrument names.
+2. Run `lilypond` on the LilyPond file *twice*. The first time you run `lilypond`, two files will be written: an .indents.ily file with a [`\paper` block](https://lilypond.org/doc/Documentation/notation/the-paper-block) that contains indents to align instrument names to the left margin, and a .short-instrument-name-width.scm file with the maximum width of short instrument names (used on all staves but the first). In subsequent runs of `lilypond`, these files will be used to align instrument names.
 
 Note that if you declare a `\paper` block after `\include`-ing this engraver, and the `\paper` block sets indents, the indents in the subsequent `\paper` block will take precedence over the indents in .indents.ily. Consequently, because `set-paper-size` sets indents, you must set paper size *before* `\include`-ing this engraver. For example, this will result in misalignment:
 
