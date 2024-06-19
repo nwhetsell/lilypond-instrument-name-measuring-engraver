@@ -15,7 +15,10 @@ jobs:
     - name: Create examples PDFs
       run: |
         cd examples
-        for _ in {1..2}; do lilypond orchestra.ly; done
+        for file in *.ly; do
+          rm -f .indents.ily .short-instrument-name-width.scm
+          for _ in {1..2}; do lilypond "$file"; done
+        done
 
     - name: Archive PDFs
       uses: actions/upload-artifact@main
