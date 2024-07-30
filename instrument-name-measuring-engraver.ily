@@ -9,24 +9,8 @@
 
 \layout {
   \context {
-    \GrandStaff
-    \override InstrumentName.self-alignment-X = #RIGHT
-  }
-  \context {
-    \PianoStaff
-    \override InstrumentName.self-alignment-X = #RIGHT
-  }
-  \context {
-    \Staff
-    \override InstrumentName.self-alignment-X = #RIGHT
-  }
-  \context {
-    \StaffGroup
-    \override InstrumentName.self-alignment-X = #RIGHT
-  }
-
-  \context {
     \Score
+    \override InstrumentName.self-alignment-X = #RIGHT
     \override InstrumentName.X-offset = #(lambda (grob)
       (let ((x-offset (system-start-text::calc-x-offset grob)))
         (unless indents-file-exists
