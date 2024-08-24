@@ -9,9 +9,9 @@ music = {
 
 \language "english"
 
-#(define-markup-command (append-flat layout properties text) (markup?)
+#(define-markup-command (text-flat layout properties) ()
   (interpret-markup layout properties
-    #{ \markup \concat { #text \raise #0.4 \fontsize #-3 \flat } #}))
+    #{ \markup \fontsize #-3 \text-accidental #-1/2 #}))
 
 \score {
   <<
@@ -64,10 +64,10 @@ music = {
       }
 
       \new Staff \with {
-        instrumentName = \markup { \append-flat "2 Clarinets in B" }
+        instrumentName = \markup { \concat { "2 Clarinets in B" \text-flat } }
         shortInstrumentName = \markup {
           \shared-stave
-            \column { "Cl." \append-flat "in B" }
+            \column { "Cl." \concat { "in B" \text-flat } }
             \right-column { "1" "2" }
         }
         midiInstrument = "clarinet"
@@ -141,10 +141,10 @@ music = {
       >>
 
       \new Staff \with {
-        instrumentName = \markup { \append-flat "3 Trumpets in B" }
+        instrumentName = \markup { \concat { "3 Trumpets in B" \text-flat } }
         shortInstrumentName = \markup {
           \shared-stave
-            \column { "Tpt." \append-flat "in B" }
+            \column { "Tpt." \concat { "in B" \text-flat } }
             \right-column { "1" "2" "3" }
         }
         midiInstrument = "trumpet"
