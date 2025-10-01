@@ -3,9 +3,9 @@
 #(define indents-file-name ".indents.ily")
 #(define indents-file-exists (file-exists? (string-join `(,(getcwd) ,indents-file-name) file-name-separator-string)))
 #(define short-instrument-name-width-file-name ".short-instrument-name-width.scm")
-#(define max-indent -inf.0)
-#(define max-short-indent -inf.0)
-#(define max-short-instrument-name-width -inf.0)
+#(define max-indent 0)
+#(define max-short-indent 0)
+#(define max-short-instrument-name-width 0)
 
 \layout {
   \context {
@@ -109,7 +109,9 @@ $(let ((file-name (string-join `(,(getcwd) ,indents-file-name) file-name-separat
             (load file-name)
             (for-each
               (lambda (system-start-text)
-                (ly:grob-set-property! system-start-text 'text (markup #:with-dimension X `(0 . ,short-instrument-name-width) (ly:grob-property system-start-text 'text))))
+                (let ((short-instrument-name (ly:grob-property system-start-text 'text)))
+                  (unless (null? short-instrument-name)
+                    (ly:grob-set-property! system-start-text 'text (markup #:with-dimension X `(0 . ,short-instrument-name-width) short-instrument-name)))))
               system-start-texts)))
 
         (set! system-start-texts '())))))
