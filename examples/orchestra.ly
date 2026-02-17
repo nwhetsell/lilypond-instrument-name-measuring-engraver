@@ -331,8 +331,8 @@ music = {
       >>
 
       \new Staff \with {
-        instrumentName = "Contrabass"
-        shortInstrumentName = "Cb."
+        instrumentName = "Double Bass"
+        shortInstrumentName = "D.B."
         midiInstrument = "contrabass"
       } {
         \clef "bass_8"
