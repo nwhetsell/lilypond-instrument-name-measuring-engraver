@@ -339,26 +339,18 @@ music = {
         \music
       }
     >>
-
-    \new Dynamics \with {
-      \consists Measure_counter_engraver
-      \override MeasureCounter.direction = #DOWN
-      \override MeasureCounter.font-encoding = #'latin1
-      \override MeasureCounter.font-features = #'("pnum")
-      \override MeasureCounter.font-size = #2
-      \override VerticalAxisGroup.nonstaff-relatedstaff-spacing.padding = #2
-    } {
-      \startMeasureCount
-      \music
-      \stopMeasureCount
-    }
   >>
 
   \layout {
     \context {
       \Score
       rehearsalMarkFormatter = #format-mark-box-alphabet
-      \remove Bar_number_engraver
+      centerBarNumbers = ##t
+      barNumberVisibility = #all-bar-numbers-visible
+      \override CenteredBarNumber.font-size = #1
+      \override CenteredBarNumberLineSpanner.direction = #DOWN
+      \override CenteredBarNumberLineSpanner.minimum-space = #8
+      \override CenteredBarNumberLineSpanner.outside-staff-padding = #1
       \remove Mark_engraver
       \remove Metronome_mark_engraver
       \remove Staff_collecting_engraver
