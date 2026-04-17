@@ -14,19 +14,17 @@ music = {
     \new StaffGroup="Woodwinds"
     <<
       \new Staff \with {
+        \consists Mark_engraver
+        \consists Metronome_mark_engraver
+        \consists Staff_collecting_engraver
+        \override MetronomeMark.font-size = #2
+
         instrumentName ="Piccolo"
         shortInstrumentName = "Picc."
         midiInstrument = "piccolo"
       } {
-        \new Voice \with {
-          \consists Mark_engraver
-          \consists Metronome_mark_engraver
-          \consists Staff_collecting_engraver
-          \override MetronomeMark.font-size = #2
-        } {
-          \clef "treble^8"
-          \music
-        }
+        \clef "treble^8"
+        \music
       }
 
       \new Staff \with {
@@ -249,16 +247,14 @@ music = {
         systemStartDelimiter = #'SystemStartSquare
       } <<
         \new Staff \with {
+          \consists Mark_engraver
+          \consists Metronome_mark_engraver
+          \consists Staff_collecting_engraver
+          \override MetronomeMark.font-size = #2
+
           midiInstrument = "violin"
         } {
-          \new Voice \with {
-            \consists Mark_engraver
-            \consists Metronome_mark_engraver
-            \consists Staff_collecting_engraver
-            \override MetronomeMark.font-size = #2
-          } {
-            \music
-          }
+          \music
         }
 
         \new Staff \with {
