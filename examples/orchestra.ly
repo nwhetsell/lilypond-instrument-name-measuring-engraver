@@ -1,4 +1,4 @@
-\version "2.25.0"
+\version "2.25.19"
 
 \paper { #(set-paper-size "11x17") }
 \include "../instrument-name-measuring-engraver.ily"
@@ -8,10 +8,6 @@ music = {
 }
 
 \language "english"
-
-#(define-markup-command (text-flat layout properties) ()
-  (interpret-markup layout properties
-    #{ \markup \fontsize #-3 \text-accidental #-1/2 #}))
 
 \score {
   <<
