@@ -10,7 +10,7 @@ jobs:
       uses: actions/checkout@v6
 
     - name: Install LilyPond
-      run: brew install nwhetsell/lilypond/lilypond-unstable && brew link lilypond-unstable
+      run: brew install nwhetsell/lilypond/lilypond-unstable && brew link --force lilypond-unstable
 
     - name: Create examples PDFs
       run: |
