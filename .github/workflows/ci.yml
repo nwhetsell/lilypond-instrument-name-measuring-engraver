@@ -4,13 +4,19 @@ on: [push, pull_request]
 
 jobs:
   Test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lilypond-version: [2.25.0, 2.26.0]
     steps:
     - name: Check out repository
       uses: actions/checkout@v6
 
     - name: Install LilyPond
-      run: brew install nwhetsell/lilypond/lilypond-unstable && brew link --force lilypond-unstable
+      run: |
+        wget --no-verbose https://gitlab.com/lilypond/lilypond/-/releases/v${{ matrix.lilypond-version }}/downloads/lilypond-${{ matrix.lilypond-version }}-linux-x86_64.tar.gz
+        tar -xf lilypond-${{ matrix.lilypond-version }}-linux-x86_64.tar.gz
+        echo "$(pwd)/lilypond-${{ matrix.lilypond-version }}/bin" >> $GITHUB_PATH
 
     - name: Create examples PDFs
       run: |
