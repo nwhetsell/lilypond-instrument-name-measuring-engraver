@@ -7,6 +7,8 @@
 #(define max-short-indent 0)
 #(define max-short-instrument-name-width 0)
 
+#(define force-short-names #f)
+
 \layout {
   \context {
     \Score
@@ -111,7 +113,10 @@ $(let ((file-name (string-join `(,(getcwd) ,indents-file-name) file-name-separat
               (lambda (system-start-text)
                 (let ((short-instrument-name (ly:grob-property system-start-text 'text)))
                   (unless (null? short-instrument-name)
-                    (ly:grob-set-property! system-start-text 'text (markup #:with-dimension X `(0 . ,short-instrument-name-width) short-instrument-name)))))
+                    (begin
+                      (ly:grob-set-property! system-start-text 'text (markup #:with-dimension X `(0 . ,short-instrument-name-width) short-instrument-name))
+                      (when force-short-names
+                        (ly:grob-set-property! system-start-text 'long-text (ly:grob-property system-start-text 'text)))))))
               system-start-texts)))
 
         (set! system-start-texts '())))))
