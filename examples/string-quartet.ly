@@ -2,6 +2,8 @@
 
 \include "../instrument-name-measuring-engraver.ily"
 
+\pointAndClickOff
+
 music = {
   s1*4 \break s
 }
@@ -55,5 +57,3 @@ music = {
 \paper {
   system-separator-markup = \slashSeparator
 }
-
-\pointAndClickOff

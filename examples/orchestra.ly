@@ -3,11 +3,12 @@
 \paper { #(set-paper-size "11x17") }
 \include "../instrument-name-measuring-engraver.ily"
 
+\language "english"
+\pointAndClickOff
+
 music = {
   \tempo "Tempo" s1*4 \mark \default \break s
 }
-
-\language "english"
 
 \score {
   <<
@@ -204,8 +205,8 @@ music = {
 
       \new DrumStaff \with {
         shortInstrumentName = \markup { \shared-stave \null "2" }
+        \override StaffSymbol.line-count = #1
       } {
-        \override DrumStaff.StaffSymbol.line-count = #1
         \music
       }
     >>
@@ -336,9 +337,8 @@ music = {
   \layout {
     \context {
       \Score
-      rehearsalMarkFormatter = #format-mark-box-alphabet
-      centerBarNumbers = ##t
       barNumberVisibility = #all-bar-numbers-visible
+      centerBarNumbers = ##t
       \override CenteredBarNumber.font-size = #1
       \override CenteredBarNumberLineSpanner.direction = #DOWN
       \override CenteredBarNumberLineSpanner.minimum-space = #8
@@ -379,5 +379,3 @@ music = {
     }
   }
 }
-
-\pointAndClickOff
