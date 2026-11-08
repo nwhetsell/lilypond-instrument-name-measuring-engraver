@@ -18,7 +18,7 @@ music = {
         \consists Mark_engraver
         \consists Metronome_mark_engraver
         \consists Staff_collecting_engraver
-        \override MetronomeMark.font-size = #2
+        \override MetronomeMark.font-size = 2
 
         instrumentName ="Piccolo"
         shortInstrumentName = "Picc."
@@ -205,7 +205,7 @@ music = {
 
       \new DrumStaff \with {
         shortInstrumentName = \markup { \shared-stave \null "2" }
-        \override StaffSymbol.line-count = #1
+        \override StaffSymbol.line-count = 1
       } {
         \music
       }
@@ -251,7 +251,7 @@ music = {
           \consists Mark_engraver
           \consists Metronome_mark_engraver
           \consists Staff_collecting_engraver
-          \override MetronomeMark.font-size = #2
+          \override MetronomeMark.font-size = 2
 
           midiInstrument = "violin"
         } {
@@ -339,10 +339,10 @@ music = {
       \Score
       barNumberVisibility = #all-bar-numbers-visible
       centerBarNumbers = ##t
-      \override CenteredBarNumber.font-size = #1
+      \override CenteredBarNumber.font-size = 1
       \override CenteredBarNumberLineSpanner.direction = #DOWN
-      \override CenteredBarNumberLineSpanner.minimum-space = #8
-      \override CenteredBarNumberLineSpanner.outside-staff-padding = #1
+      \override CenteredBarNumberLineSpanner.minimum-space = 8
+      \override CenteredBarNumberLineSpanner.outside-staff-padding = 1
       \remove Mark_engraver
       \remove Metronome_mark_engraver
       \remove Staff_collecting_engraver
